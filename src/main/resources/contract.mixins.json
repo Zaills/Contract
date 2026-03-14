@@ -1,0 +1,14 @@
+{
+	"required": true,
+	"package": "net.zaills.contract.mixin",
+	"compatibilityLevel": "JAVA_21",
+	"mixins": [
+		"InteractWithPlayer"
+	],
+	"injectors": {
+		"defaultRequire": 1
+	},
+	"overwrites": {
+		"requireAnnotations": true
+	}
+}

@@ -1,0 +1,40 @@
+{
+	"schemaVersion": 1,
+	"id": "contract",
+	"version": "${version}",
+	"name": "Contract",
+	"description": "You want to signe some Contract ?",
+	"authors": [
+		"Zaills"
+	],
+	"contact": {
+		"homepage": "https://fabricmc.net/"
+	},
+	"license": "CC0-1.0",
+	"icon": "assets/contract/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"net.zaills.contract.Contract"
+		],
+		"client": [
+			"net.zaills.contract.ContractClient"
+		],
+		"fabric-datagen": [
+			"net.zaills.contract.ContractDataGenerator"
+		]
+	},
+	"mixins": [
+		"contract.mixins.json",
+		{
+			"config": "contract.client.mixins.json",
+			"environment": "client"
+		}
+	],
+	"depends": {
+		"fabricloader": ">=0.18.4",
+		"minecraft": "~1.21.11",
+		"java": ">=21",
+		"fabric-api": "*"
+	}
+}

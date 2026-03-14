@@ -1,0 +1,6 @@
+{
+  "item.contract.contract": "Contract",
+  "item.contract.contract.contractor": "Contractor: %s",
+  "item.contract.contract.contractee": "Contractee: %s",
+  "item.contract.quill": "Quill"
+}
