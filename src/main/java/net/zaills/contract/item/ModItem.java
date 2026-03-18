@@ -14,8 +14,8 @@ import net.zaills.contract.Contract;
 import java.util.function.Function;
 
 public class ModItem {
-    public static final Item BASE_CONTRACT = register("contract", BaseContract::new, new Item.Properties().fireResistant().rarity(Rarity.UNCOMMON));
-    public static final Item QUILL = register("quill", Quill::new, new Item.Properties().rarity(Rarity.EPIC).stacksTo(1));
+    public static final Item BASE_CONTRACT = register("contract", BaseContract::new, new Item.Properties().fireResistant().rarity(Rarity.UNCOMMON).stacksTo(1));
+    public static final Item QUILL = register("quill", Quill::new, new Item.Properties().rarity(Rarity.EPIC).stacksTo(1).durability(64));
 
     public static <T extends Item> T register(String name, Function<Item.Properties, T> itemFactory, Item.Properties settings) {
         ResourceKey<Item> itemKey = ResourceKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(Contract.MOD_ID, name));
