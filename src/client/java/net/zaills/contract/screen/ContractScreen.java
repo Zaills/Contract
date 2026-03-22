@@ -13,6 +13,7 @@ import java.util.UUID;
 public class ContractScreen extends Screen {
     private PlayerSelectionWidget contractorWidget;
     private PlayerSelectionWidget contracteeWidget;
+    private BlockInputWidget BIWidget;
     private Button sendButton;
 
     public ContractScreen(Component title) {
@@ -32,12 +33,18 @@ public class ContractScreen extends Screen {
         contracteeWidget = new PlayerSelectionWidget(x, y, widgetSize, widgetSize, false);
         this.addRenderableWidget(contracteeWidget);
 
+        x = (this.width - 150) / 2;
+        BIWidget = new BlockInputWidget(x, y + 15, 150, 80, this::updateButtonState);
+        this.addRenderableWidget(BIWidget);
+
         this.sendButton = Button.builder(Component.literal("Send Contract"), button -> {
             UUID contractorId = this.contractorWidget.getSelectedPlayerId();
             UUID contracteeId = this.contracteeWidget.getSelectedPlayerId();
+            String blockString = this.BIWidget.getBlockId();
+            int amount = this.BIWidget.getAmount();
 
-            if (contractorId != null && contracteeId != null && !contractorId.equals(contracteeId)) {
-                ClientPlayNetworking.send(new ContractPayload(contractorId, contracteeId));
+            if (canSendContract()) {
+                ClientPlayNetworking.send(new ContractPayload(contractorId, contracteeId, blockString, amount));
                 this.onClose();
             }
         }).bounds((this.width - 120) / 2, this.height - 30, 120, 20).build();
@@ -46,13 +53,21 @@ public class ContractScreen extends Screen {
         updateButtonState();
     }
 
+    private boolean canSendContract() {
+        if (contractorWidget ==null || contracteeWidget == null || BIWidget == null) return false;
+
+        UUID contractorId = this.contractorWidget.getSelectedPlayerId();
+        UUID contracteeId = this.contracteeWidget.getSelectedPlayerId();
+
+        boolean playersValid = (contractorId != null && contracteeId != null && !contractorId.equals(contracteeId));
+
+        return playersValid && BIWidget.isValid();
+    }
+
     private void updateButtonState() {
-        if (contractorWidget == null || contracteeWidget == null || sendButton == null) return;
-
-        UUID id1 = contractorWidget.getSelectedPlayerId();
-        UUID id2 = contracteeWidget.getSelectedPlayerId();
-
-        sendButton.active = (id1 != null && id2 != null && !id1.equals(id2));
+        if (sendButton != null) {
+            sendButton.active = canSendContract();
+        }
     }
 
     @Override

@@ -8,7 +8,7 @@ import net.zaills.contract.Contract;
 
 import java.util.UUID;
 
-public record ContractPayload(UUID contractor, UUID contractee) implements CustomPacketPayload {
+public record ContractPayload(UUID contractor, UUID contractee, String blockId, int amount) implements CustomPacketPayload {
     public static final CustomPacketPayload.Type<ContractPayload> ID =
             new CustomPacketPayload.Type<>(Identifier.fromNamespaceAndPath(Contract.MOD_ID, "contract_payload"));
     public static final StreamCodec<FriendlyByteBuf, ContractPayload> CODEC =
@@ -18,12 +18,14 @@ public record ContractPayload(UUID contractor, UUID contractee) implements Custo
             );
 
     public ContractPayload(FriendlyByteBuf buf) {
-        this(buf.readUUID(), buf.readUUID());
+        this(buf.readUUID(), buf.readUUID(), buf.readUtf(), buf.readInt());
     }
 
     private void write(FriendlyByteBuf buf) {
         buf.writeUUID(contractor);
         buf.writeUUID(contractee);
+        buf.writeUtf(blockId);
+        buf.writeInt(amount);
     }
 
     @Override

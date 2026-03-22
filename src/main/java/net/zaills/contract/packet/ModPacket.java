@@ -32,8 +32,11 @@ public class ModPacket {
 
                     ServerPlayer target = context.server().getPlayerList().getPlayer(contractee);
                     ServerPlayer runner = context.server().getPlayerList().getPlayer(contractor);
+                    String blockString = payload.blockId();
+                    int amount = payload.amount();
                     if (target != null && runner != null) {
                         System.out.println("New Contract between: " + runner.getScoreboardName() + " and " + target.getScoreboardName());
+                        System.out.println("Block: " + blockString + " -> " + amount);
                         ItemStack newContract = BaseContract.createContract(
                                 runner.getGameProfile(), target.getGameProfile()
                         );
