@@ -37,14 +37,17 @@ public class ModPacket {
                     if (target != null && runner != null) {
                         System.out.println("New Contract between: " + runner.getScoreboardName() + " and " + target.getScoreboardName());
                         System.out.println("Block: " + blockString + " -> " + amount);
-                        ItemStack newContract = BaseContract.createContract(
-                                runner.getGameProfile(), target.getGameProfile()
+                        ItemStack newContract = BaseContract.createBlockContract(
+                                runner.getGameProfile(),
+                                target.getGameProfile(),
+                                blockString,
+                                amount
                         );
-                        Level level = runner.level();
 
                         if (runner.getInventory().getFreeSlot() != -1) {
                             runner.getInventory().add(newContract);
                         } else {
+                            Level level = runner.level();
                             ItemEntity itemEntity = new ItemEntity(level,
                                     runner.getX(), runner.getY() + 1, runner.getZ(), newContract
                             );

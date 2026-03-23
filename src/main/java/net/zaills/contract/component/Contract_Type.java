@@ -1,6 +1,7 @@
 package net.zaills.contract.component;
 
 public enum Contract_Type {
+    BASE,
     DeathExchange,
     Blocks,
     Regen;
@@ -17,6 +18,6 @@ public enum Contract_Type {
                 return Regen;
             }
         }
-        return null;
+        return BASE;
     }
 }

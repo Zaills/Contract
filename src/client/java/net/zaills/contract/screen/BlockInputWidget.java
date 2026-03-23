@@ -102,7 +102,6 @@ public class BlockInputWidget extends AbstractWidget {
     }
 
     public int getAmount() {
-        System.out.println(Integer.parseInt(this.amountInput.getValue()));
         return this.amountInput.getValue().isEmpty() ? 0 : Integer.parseInt(this.amountInput.getValue());
     }
 

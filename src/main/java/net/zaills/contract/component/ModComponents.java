@@ -28,6 +28,17 @@ public class ModComponents {
             Identifier.fromNamespaceAndPath(Contract.MOD_ID, "contract_signed"),
             DataComponentType.<Boolean>builder().persistent(Codec.BOOL).build()
     );
+    public static final DataComponentType<String> OPTION = Registry.register(
+            BuiltInRegistries.DATA_COMPONENT_TYPE,
+            Identifier.fromNamespaceAndPath(Contract.MOD_ID, "contract_option"),
+            DataComponentType.<String>builder().persistent(Codec.STRING).build()
+    );
+    public static final DataComponentType<Integer> AMOUNT = Registry.register(
+            BuiltInRegistries.DATA_COMPONENT_TYPE,
+            Identifier.fromNamespaceAndPath(Contract.MOD_ID, "contract_amount"),
+            DataComponentType.<Integer>builder().persistent(Codec.INT).build()
+    );
+
 
 
     public static void initialize() {

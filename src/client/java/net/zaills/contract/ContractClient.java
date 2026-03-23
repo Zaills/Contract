@@ -6,6 +6,7 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
+import net.zaills.contract.component.Contract_Type;
 import net.zaills.contract.component.ModComponents;
 import net.zaills.contract.packet.OpenContractScreenPayload;
 import net.zaills.contract.screen.ContractScreen;
@@ -35,7 +36,15 @@ public class ContractClient implements ClientModInitializer {
 				} catch (Exception ignored) {}
 				tooltip.add(Component.translatable("item.contract.contract.contractee", contractee).withStyle(ChatFormatting.DARK_RED));
 			}
-		});
+
+			try {
+				if (stack.get(ModComponents.CONTRACT_TYPE) == Contract_Type.Blocks.ordinal()) {
+					String blockId = stack.get(ModComponents.OPTION);
+					int amount = stack.get(ModComponents.AMOUNT);
+					tooltip.add(Component.translatable("item.contract.contract.block", blockId, amount));
+				}
+			} catch (Exception ignored) {}
+        });
 
 
 		ClientPlayNetworking.registerGlobalReceiver(OpenContractScreenPayload.ID, (payload, context) -> {
