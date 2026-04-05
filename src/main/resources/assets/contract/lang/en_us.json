@@ -3,5 +3,7 @@
   "item.contract.contract.contractor": "Contractor: %s",
   "item.contract.contract.contractee": "Contractee: %s",
   "item.contract.contract.block": "Own: %s [%d]",
+  "item.contract.contract.waiting.contractor": "Waiting for Contractor to sign...",
+  "item.contract.contract.waiting.contractee": "Waiting for Contractee to sign...",
   "item.contract.quill": "Quill"
 }

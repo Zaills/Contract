@@ -64,6 +64,26 @@ public class ContractManager extends SavedData {
         return activeContracts;
     }
 
+    public List<ContractData> getPlayerContract(UUID playerId) {
+        List<ContractData> output = new ArrayList<>();
+        for (Map.Entry<UUID, ContractData> entry : activeContracts.entrySet()) {
+            if (entry.getValue().contractorId().equals(playerId) || entry.getValue().contracteeId().equals(playerId)) {
+                output.add(entry.getValue());
+            }
+        }
+        return output;
+    }
+
+    public List<Map.Entry<UUID, ContractData>> getPlayerContractEntries(UUID playerId) {
+        List<Map.Entry<UUID, ContractData>> output = new ArrayList<>();
+        for (Map.Entry<UUID, ContractData> entry : activeContracts.entrySet()) {
+            if (entry.getValue().contracteeId().equals(playerId)) {
+                output.add(entry);
+            }
+        }
+        return output;
+    }
+
     public void addContract(UUID contractID, ContractData data) {
         this.activeContracts.put(contractID, data);
         this.setDirty();

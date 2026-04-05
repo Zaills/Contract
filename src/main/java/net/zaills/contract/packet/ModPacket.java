@@ -7,6 +7,7 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
+import net.zaills.contract.Contract;
 import net.zaills.contract.item.BaseContract;
 
 import java.util.UUID;
@@ -35,8 +36,8 @@ public class ModPacket {
                     String blockString = payload.blockId();
                     int amount = payload.amount();
                     if (target != null && runner != null) {
-                        System.out.println("New Contract between: " + runner.getScoreboardName() + " and " + target.getScoreboardName());
-                        System.out.println("Block: " + blockString + " -> " + amount);
+                        Contract.LOGGER.info("New Contract between: " + runner.getScoreboardName() + " and " + target.getScoreboardName());
+                        Contract.LOGGER.info("Block: " + blockString + " -> " + amount);
                         ItemStack newContract = BaseContract.createBlockContract(
                                 runner.getGameProfile(),
                                 target.getGameProfile(),
@@ -55,7 +56,7 @@ public class ModPacket {
                         }
 
                     } else {
-                        System.out.println("Contract failed: No paper in offhand.");
+                        Contract.LOGGER.debug("Contract failed: No paper in offhand.");
                     }
                 }
             });

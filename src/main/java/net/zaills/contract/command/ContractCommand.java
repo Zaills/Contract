@@ -15,20 +15,24 @@ import net.minecraft.server.permissions.Permissions;
 import net.zaills.contract.record.ContractData;
 import net.zaills.contract.record.ContractManager;
 
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
 public class ContractCommand {
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(Commands.literal("contracts")
-                .requires(source -> source.permissions().hasPermission(Permissions.COMMANDS_MODERATOR))
+                        .executes(ContractCommand::yourContract)
                 .then(Commands.literal("list")
-                        .executes(context -> listContract(context.getSource()))
+                        .requires(source -> source.permissions().hasPermission(Permissions.COMMANDS_MODERATOR))
+                        .executes(ContractCommand::listContract)
                 )
                 .then(Commands.literal("purge")
-                        .executes(context -> purgeContract(context.getSource()))
+                        .requires(source -> source.permissions().hasPermission(Permissions.COMMANDS_MODERATOR))
+                        .executes(ContractCommand::purgeContract)
                 )
                 .then(Commands.literal("remove")
+                        .requires(source -> source.permissions().hasPermission(Permissions.COMMANDS_MODERATOR))
                         .then(Commands.argument("id", StringArgumentType.string())
                             .executes(ContractCommand::removeContract)
                         )
@@ -36,17 +40,49 @@ public class ContractCommand {
         );
     }
 
-    private static int listContract(CommandSourceStack source) {
-        MinecraftServer server = source.getServer();
+    private static int yourContract(CommandContext<CommandSourceStack> context) {
+        MinecraftServer server = context.getSource().getServer();
+        ContractManager manager = ContractManager.getServerState(server);
+        Map<UUID, ContractData> contracts = manager.getActiveContract();
+
+        UUID playerId = context.getSource().getPlayer().getUUID();
+
+        List<ContractData> yourData = manager.getPlayerContract(playerId);
+
+        if (contracts.isEmpty() || yourData.isEmpty()) {
+            context.getSource().sendSuccess(() -> Component.literal("§cThere are no active contracts."), false);
+            return 1;
+        }
+
+        context.getSource().sendSuccess(() -> Component.literal("§6--- Active Contracts (" + yourData.size() + ") ---"), false);
+
+        for (ContractData data : yourData) {
+            String contractor = getPlayerName(server, data.contractorId());
+            String contractee = getPlayerName(server, data.contracteeId());
+
+            MutableComponent infoLine = Component.literal("§f" + contractor + " §7§l-> §f" + contractee)
+                    .append(Component.literal(" §7| §d" + data.amount() + " §7x §a" + data.option()));
+
+
+            context.getSource().sendSuccess(() -> infoLine, false);
+
+        }
+
+
+        return 1;
+    }
+
+    private static int listContract(CommandContext<CommandSourceStack> context) {
+        MinecraftServer server = context.getSource().getServer();
         ContractManager manager = ContractManager.getServerState(server);
         Map<UUID, ContractData> contracts = manager.getActiveContract();
 
         if (contracts.isEmpty()) {
-            source.sendSuccess(() -> Component.literal("§cThere are no active contracts."), false);
+            context.getSource().sendSuccess(() -> Component.literal("§cThere are no active contracts."), false);
             return 1;
         }
 
-        source.sendSuccess(() -> Component.literal("§6--- Active Contracts (" + contracts.size() + ") ---"), false);
+        context.getSource().sendSuccess(() -> Component.literal("§6--- Active Contracts (" + contracts.size() + ") ---"), false);
 
         for (Map.Entry<UUID, ContractData> entry : contracts.entrySet()) {
             UUID id = entry.getKey();
@@ -55,19 +91,17 @@ public class ContractCommand {
             String contractor = getPlayerName(server, data.contractorId());
             String contractee = getPlayerName(server, data.contracteeId());
 
-
-
             MutableComponent idComponent = Component.literal("§e[" + id.toString().substring(0, 8) + "] ")
                     .withStyle(style -> style
                             .withClickEvent(new ClickEvent.CopyToClipboard(id.toString()))
                             .withHoverEvent(new HoverEvent.ShowText(Component.literal("§7Full ID: " + id + "\n§eClick to copy to clipboard")))
                     );
 
-            MutableComponent infoLine = Component.literal("§f" + contractor + "§7§l-> §f" + contractee)
+            MutableComponent infoLine = Component.literal("§f" + contractor + " §7§l-> §f" + contractee)
                             .append(Component.literal(" §7| §d" + data.amount() + " §7x §a" + data.option()));
 
 
-            source.sendSuccess(() -> idComponent.append(infoLine), false);
+            context.getSource().sendSuccess(() -> idComponent.append(infoLine), false);
         }
 
 
@@ -80,8 +114,8 @@ public class ContractCommand {
         else return uuid.toString();
     }
 
-    private static int purgeContract(CommandSourceStack source) {
-        MinecraftServer server = source.getServer();
+    private static int purgeContract(CommandContext<CommandSourceStack> context) {
+        MinecraftServer server = context.getSource().getServer();
         ContractManager manager = ContractManager.getServerState(server);
         Map<UUID, ContractData> contracts = manager.getActiveContract();
 

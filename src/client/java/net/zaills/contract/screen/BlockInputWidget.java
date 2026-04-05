@@ -34,9 +34,9 @@ public class BlockInputWidget extends AbstractWidget {
         this.blockInput.setValue("minecraft:");
         this.blockInput.setResponder(text -> {
             if (isValidBlock(text)) {
-                this.blockInput.setTextColor(0xfcf9fa);
+                this.blockInput.setTextColor(0xFFfcf9fa);
             } else {
-                this.blockInput.setTextColor(0xFF5555);
+                this.blockInput.setTextColor(0xFFFF5555);
             }
             this.onUpdate.run();
         });
@@ -66,13 +66,8 @@ public class BlockInputWidget extends AbstractWidget {
         boolean clickBlock = this.blockInput.mouseClicked(mouseButtonEvent, bl);
         boolean clickAmount = this.amountInput.mouseClicked(mouseButtonEvent, bl);
 
-        if (clickBlock) {
-            this.blockInput.setFocused(true);
-            this.amountInput.setFocused(false);
-        } else if (clickAmount) {
-            this.blockInput.setFocused(false);
-            this.amountInput.setFocused(true);
-        }
+        this.blockInput.setFocused(clickBlock);
+        this.amountInput.setFocused(clickAmount);
 
         return clickBlock || clickAmount || super.mouseClicked(mouseButtonEvent, bl);
     }
@@ -94,7 +89,7 @@ public class BlockInputWidget extends AbstractWidget {
     private boolean isValidBlock(String text) {
         Identifier id = Identifier.tryParse(text);
         if (id == null) return false;
-        return BuiltInRegistries.BLOCK.containsKey(id);
+        return BuiltInRegistries.ITEM.containsKey(id);
     }
 
     public String getBlockId() {

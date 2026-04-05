@@ -28,7 +28,7 @@ public class Quill extends Item {
 
             ItemStack offHandStack = player.getOffhandItem();
 
-            if (offHandStack.is(Items.PAPER)) {
+            if (offHandStack.is(Items.PAPER) || player.isCreative()) {
                 itemStack.hurtAndBreak(1, serverPlayer, serverPlayer.getEquipmentSlotForItem(itemStack));
                 player.awardStat(Stats.ITEM_USED.get(this));
 

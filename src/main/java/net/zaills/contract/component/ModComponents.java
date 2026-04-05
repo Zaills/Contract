@@ -38,6 +38,11 @@ public class ModComponents {
             Identifier.fromNamespaceAndPath(Contract.MOD_ID, "contract_amount"),
             DataComponentType.<Integer>builder().persistent(Codec.INT).build()
     );
+    public static final DataComponentType<String> ID = Registry.register(
+            BuiltInRegistries.DATA_COMPONENT_TYPE,
+            Identifier.fromNamespaceAndPath(Contract.MOD_ID, "id"),
+            DataComponentType.<String>builder().persistent(Codec.STRING).build()
+    );
 
 
 

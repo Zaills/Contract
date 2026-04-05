@@ -28,7 +28,7 @@ public class ContractClient implements ClientModInitializer {
 				try {
 					contractor = minecraft.getConnection().getPlayerInfo(UUID.fromString(contractorId)).getProfile().name();
 				} catch (Exception ignored) {}
-                tooltip.add(Component.translatable("item.contract.contract.contractee", contractor).withStyle(ChatFormatting.GOLD));
+                tooltip.add(Component.translatable("item.contract.contract.contractor", contractor).withStyle(ChatFormatting.GOLD));
 
 				String contractee = "offline [" + contracteeId + "]";
 				try {
@@ -44,6 +44,14 @@ public class ContractClient implements ClientModInitializer {
 					tooltip.add(Component.translatable("item.contract.contract.block", blockId, amount));
 				}
 			} catch (Exception ignored) {}
+
+			if (stack.has(ModComponents.SIGNED)) {
+				boolean signedStatus = Boolean.TRUE.equals(stack.get(ModComponents.SIGNED));
+				if (signedStatus)
+					tooltip.add(Component.translatable("item.contract.contract.waiting.contractor"));
+				else
+					tooltip.add(Component.translatable("item.contract.contract.waiting.contractee"));
+			}
         });
 
 

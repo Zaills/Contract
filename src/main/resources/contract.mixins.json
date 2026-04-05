@@ -1,12 +1,15 @@
 {
-	"required": true,
-	"package": "net.zaills.contract.mixin",
-	"compatibilityLevel": "JAVA_21",
-	"mixins": [],
-	"injectors": {
-		"defaultRequire": 1
-	},
-	"overwrites": {
-		"requireAnnotations": true
+  "required": true,
+  "package": "net.zaills.contract.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+    "ItemMixin",
+    "ItemEntityMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "overwrites": {
+    "requireAnnotations": true
 	}
 }
