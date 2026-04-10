@@ -5,7 +5,8 @@
 	"name": "Contract",
 	"description": "You want to signe some Contract ?",
 	"authors": [
-		"Zaills"
+		"Zaills: Owner",
+		"Screaming: artist"
 	],
 	"contact": {
 		"homepage": "https://fabricmc.net/"
