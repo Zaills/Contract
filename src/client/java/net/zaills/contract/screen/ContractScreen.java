@@ -6,15 +6,20 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.zaills.contract.component.Contract_Type;
 import net.zaills.contract.packet.ContractPayload;
 
+import java.util.Objects;
 import java.util.UUID;
 
 public class ContractScreen extends Screen {
     private PlayerSelectionWidget contractorWidget;
     private PlayerSelectionWidget contracteeWidget;
+    private Contract_Type currentType = Contract_Type.Blocks;
     private BlockInputWidget BIWidget;
     private Button sendButton;
+
 
     public ContractScreen(Component title) {
         super(title);
@@ -33,6 +38,17 @@ public class ContractScreen extends Screen {
         contracteeWidget = new PlayerSelectionWidget(x, y, widgetSize, widgetSize, false);
         this.addRenderableWidget(contracteeWidget);
 
+        Button typeButton = Button.builder(getTranslation(currentType.name()), button -> {
+            Contract_Type[] types = Contract_Type.values();
+            this.currentType = types[(this.currentType.ordinal() + 1) % types.length];
+
+            button.setMessage(getTranslation(currentType.name()));
+            updateButtonState();
+
+            updateWidget();
+        }).bounds((this.width - 120) / 2, y, 120, 20).build();
+        this.addRenderableWidget(typeButton);
+
         x = (this.width - 150) / 2;
         BIWidget = new BlockInputWidget(x, y + 15, 150, 80, this::updateButtonState);
         this.addRenderableWidget(BIWidget);
@@ -44,13 +60,24 @@ public class ContractScreen extends Screen {
             int amount = this.BIWidget.getAmount();
 
             if (canSendContract()) {
-                ClientPlayNetworking.send(new ContractPayload(contractorId, contracteeId, blockString, amount));
+                if (currentType.equals(Contract_Type.Blocks))
+                    ClientPlayNetworking.send(new ContractPayload(contractorId, contracteeId, blockString, amount));
+                if (currentType.equals(Contract_Type.NON_AGGRESSION))
+                    ClientPlayNetworking.send(new ContractPayload(contractorId, contracteeId, "non_aggression", 12));
                 this.onClose();
             }
         }).bounds((this.width - 120) / 2, this.height - 30, 120, 20).build();
 
         this.addRenderableWidget(sendButton);
         updateButtonState();
+    }
+
+    private void updateWidget() {
+        if (BIWidget != null) {
+            boolean requiresBlocks = (this.currentType == Contract_Type.Blocks);
+            BIWidget.visible = requiresBlocks;
+            BIWidget.active = requiresBlocks;
+        }
     }
 
     private boolean canSendContract() {
@@ -61,7 +88,10 @@ public class ContractScreen extends Screen {
 
         boolean playersValid = (contractorId != null && contracteeId != null && !contractorId.equals(contracteeId));
 
-        return playersValid && BIWidget.isValid();
+        if (!playersValid) return false;
+        if (this.currentType.equals(Contract_Type.Blocks))
+            return BIWidget.isValid();
+        return true;
     }
 
     private void updateButtonState() {
@@ -80,5 +110,14 @@ public class ContractScreen extends Screen {
     @Override
     public void render(GuiGraphics guiGraphics, int i, int j, float f) {
         super.render(guiGraphics, i, j, f);
+    }
+
+
+    private MutableComponent getTranslation(String name) {
+        if (Objects.equals(name, "NON_AGGRESSION"))
+            return Component.translatable("contract.type.nonagression");
+        else if (Objects.equals(name, "Blocks"))
+            return Component.translatable("contract.type.block");
+        return Component.translatable("contract.type.block");
     }
 }

@@ -1,7 +1,6 @@
 package net.zaills.contract.mixin;
 
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
@@ -15,7 +14,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.zaills.contract.record.ContractData;
 import net.zaills.contract.record.ContractManager;
-import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -52,13 +50,15 @@ public abstract class ItemEntityMixin
         MinecraftServer server = player.level().getServer();
         ContractManager manager = ContractManager.getServerState(server);
 
-        List<Map.Entry<UUID, ContractData>> contracts = manager.getPlayerContractEntries(player.getUUID());
+        List<Map.Entry<UUID, ContractData>> contracts = manager.getPlayerContractEntries(player.getUUID(), true);
         if (contracts.isEmpty()) return;
 
         for (Map.Entry<UUID, ContractData> entry : contracts.reversed()) {
             UUID contractId = entry.getKey();
             ContractData data = entry.getValue();
-            Item item = BuiltInRegistries.ITEM.getValue(Identifier.parse(data.option()));
+            String option = data.option();
+            if (option.equals("non_aggression")) continue;
+            Item item = BuiltInRegistries.ITEM.getValue(Identifier.parse(option));
 
             if (itemStack.is(item)) {
                 int amountSend = sendItem(data.contractorId(), player.level().getServer(), data.amount());

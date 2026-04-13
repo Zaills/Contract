@@ -33,17 +33,25 @@ public class ModPacket {
 
                     ServerPlayer target = context.server().getPlayerList().getPlayer(contractee);
                     ServerPlayer runner = context.server().getPlayerList().getPlayer(contractor);
-                    String blockString = payload.blockId();
-                    int amount = payload.amount();
                     if (target != null && runner != null) {
-                        Contract.LOGGER.info("New Contract between: " + runner.getScoreboardName() + " and " + target.getScoreboardName());
-                        Contract.LOGGER.info("Block: " + blockString + " -> " + amount);
-                        ItemStack newContract = BaseContract.createBlockContract(
-                                runner.getGameProfile(),
-                                target.getGameProfile(),
-                                blockString,
-                                amount
-                        );
+                        String blockString = payload.blockId();
+                        ItemStack newContract;
+                        if (blockString.equals("non_aggression")) {
+                            newContract = BaseContract.createNAGRESSIONContract(
+                                    runner.getGameProfile(),
+                                    target.getGameProfile()
+                            );
+                        } else {
+                            int amount = payload.amount();
+                            Contract.LOGGER.info("New Contract between: " + runner.getScoreboardName() + " and " + target.getScoreboardName());
+                            Contract.LOGGER.info("Block: " + blockString + " -> " + amount);
+                            newContract = BaseContract.createBlockContract(
+                                    runner.getGameProfile(),
+                                    target.getGameProfile(),
+                                    blockString,
+                                    amount
+                            );
+                        }
 
                         if (runner.getInventory().getFreeSlot() != -1) {
                             runner.getInventory().add(newContract);

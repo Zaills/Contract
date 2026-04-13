@@ -60,7 +60,7 @@ public class ContractCommand {
             String contractor = getPlayerName(server, data.contractorId());
             String contractee = getPlayerName(server, data.contracteeId());
 
-            MutableComponent infoLine = Component.literal("§f" + contractor + " §7§l-> §f" + contractee)
+            MutableComponent infoLine = Component.literal("§f" + contractor + " §7§l<- §f" + contractee)
                     .append(Component.literal(" §7| §d" + data.amount() + " §7x §a" + data.option()));
 
 
@@ -97,7 +97,7 @@ public class ContractCommand {
                             .withHoverEvent(new HoverEvent.ShowText(Component.literal("§7Full ID: " + id + "\n§eClick to copy to clipboard")))
                     );
 
-            MutableComponent infoLine = Component.literal("§f" + contractor + " §7§l-> §f" + contractee)
+            MutableComponent infoLine = Component.literal("§f" + contractor + " §7§l<- §f" + contractee)
                             .append(Component.literal(" §7| §d" + data.amount() + " §7x §a" + data.option()));
 
 

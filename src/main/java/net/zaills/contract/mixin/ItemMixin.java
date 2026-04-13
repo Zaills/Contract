@@ -27,7 +27,8 @@ public class ItemMixin {
 
             ContractManager manager = ContractManager.getServerState(itemEntity.level().getServer());
             manager.removeContract(id);
-            Contract.LOGGER.info("A contract was destroyed in the world. ID removed.");
+            Contract.LOGGER.info("A contract was destroyed in the world.");
+            Contract.LOGGER.debug(String.valueOf(id));
         }
 
     }

@@ -22,18 +22,20 @@ import java.util.UUID;
 
 public class BaseContract extends Item {
     public BaseContract(Properties properties) {
-        super(properties.component(ModComponents.CONTRACT_TYPE, Contract_Type.BASE.ordinal()));
+        super(properties.component(ModComponents.CONTRACT_TYPE, Contract_Type.Blocks.ordinal()));
     }
 
-    public static ItemStack createContract(GameProfile contractor, GameProfile contractee) {
+    public static ItemStack createNAGRESSIONContract(GameProfile contractor, GameProfile contractee) {
         ItemStack contract = new ItemStack(ModItem.BASE_CONTRACT);
 
         contract.set(ModComponents.CONTRACTOR, contractor.id().toString());
         contract.set(ModComponents.CONTRACTEE, contractee.id().toString());
-        contract.set(ModComponents.CONTRACT_TYPE, Contract_Type.DeathExchange.ordinal());
+        contract.set(ModComponents.CONTRACT_TYPE, Contract_Type.NON_AGGRESSION.ordinal());
         contract.set(ModComponents.SIGNED, Boolean.FALSE);
+        contract.set(ModComponents.AMOUNT, 1);
 
         return contract;
+
     }
 
     public static ItemStack createBlockContract(GameProfile contractor, GameProfile contractee, String option, int amount) {
@@ -63,10 +65,9 @@ public class BaseContract extends Item {
         }
 
         boolean signed = Boolean.TRUE.equals(item.get(ModComponents.SIGNED));
-//        int type = item.get(ModComponents.CONTRACT_TYPE);
+        if (!item.has(ModComponents.CONTRACT_TYPE)) return InteractionResult.PASS;
+        int type = item.get(ModComponents.CONTRACT_TYPE);
         String option = item.get(ModComponents.OPTION);
-        int amount = item.get(ModComponents.AMOUNT);
-
         Player contractee = level.getPlayerByUUID(UUID.fromString(contracteeId));
         if (player.equals(contractee)) {
             Contract.LOGGER.debug(contractee.getName() + " signed the contract");
@@ -76,13 +77,23 @@ public class BaseContract extends Item {
         if (player.equals(contractor) && signed ) {
             Contract.LOGGER.debug(contractor.getName() + " signed the contract");
             item.remove(ModComponents.SIGNED);
-
-            ContractData data = new ContractData(
+            ContractData data = null;
+            if (type == Contract_Type.Blocks.ordinal()) {
+                int amount = item.get(ModComponents.AMOUNT);
+                data = new ContractData(
                     contractor.getGameProfile().id(),
                     contractee.getGameProfile().id(),
                     option,
                     amount
-            );
+                );
+            } else if (type == Contract_Type.NON_AGGRESSION.ordinal()) {
+                data = new ContractData(
+                    contractor.getGameProfile().id(),
+                    contractee.getGameProfile().id(),
+                    "non_aggression",
+                    1
+                );
+            }
 
             UUID newContractId = UUID.randomUUID();
             item.set(ModComponents.ID, newContractId.toString());

@@ -5,5 +5,8 @@
   "item.contract.contract.block": "Own: %s [%d]",
   "item.contract.contract.waiting.contractor": "Waiting for Contractor to sign...",
   "item.contract.contract.waiting.contractee": "Waiting for Contractee to sign...",
-  "item.contract.quill": "Quill"
+  "item.contract.quill": "Quill",
+  "itemTooltip.contract.quill": "hold paper in your offhand and \"use\" to create contract",
+  "contract.type.block": "Item",
+  "contract.type.nonagression": "Non Aggression"
 }

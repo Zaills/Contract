@@ -74,10 +74,11 @@ public class ContractManager extends SavedData {
         return output;
     }
 
-    public List<Map.Entry<UUID, ContractData>> getPlayerContractEntries(UUID playerId) {
+    public List<Map.Entry<UUID, ContractData>> getPlayerContractEntries(UUID playerId, boolean contractee) {
         List<Map.Entry<UUID, ContractData>> output = new ArrayList<>();
         for (Map.Entry<UUID, ContractData> entry : activeContracts.entrySet()) {
-            if (entry.getValue().contracteeId().equals(playerId)) {
+            if ((contractee && entry.getValue().contracteeId().equals(playerId)) ||
+                (!contractee && entry.getValue().contractorId().equals(playerId))) {
                 output.add(entry);
             }
         }
