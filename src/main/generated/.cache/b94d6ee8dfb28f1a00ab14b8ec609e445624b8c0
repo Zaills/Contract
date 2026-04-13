@@ -1,4 +1,6 @@
 // 1.21.11	-999999999-01-01T00:00:00	Contract/Model Definitions
 ec0b92ca12fbc13521e356f0bd986f48d2cfe6f0 assets/contract/items/contract.json
+5db79c5f67ca3756812dd331063d31e0859e779e assets/contract/items/quill.json
 ce363500a469428202aafc38a18aa37a5b2f56b8 assets/contract/models/item/contract.json
 5e16f525f973bf4a2d25b186de867f91128e9e0e assets/contract/models/item/contract_dyed.json
+af2fc2600219be49834e2001edb32e5c764b5e4c assets/contract/models/item/quill.json

@@ -20,6 +20,7 @@ public class ContractModelProvider extends FabricModelProvider {
     @Override
     public void generateItemModels(ItemModelGenerators itemModelGenerators) {
         itemModelGenerators.generateTwoLayerDyedItem(ModItem.BASE_CONTRACT);
+        itemModelGenerators.generateFlatItem(ModItem.QUILL, ModelTemplates.FLAT_ITEM);
 
     }
 }
