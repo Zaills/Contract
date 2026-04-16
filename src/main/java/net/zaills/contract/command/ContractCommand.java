@@ -119,9 +119,7 @@ public class ContractCommand {
         ContractManager manager = ContractManager.getServerState(server);
         Map<UUID, ContractData> contracts = manager.getActiveContract();
 
-        for (Map.Entry<UUID, ContractData> entry : contracts.entrySet()) {
-            manager.removeContract(entry.getKey());
-        }
+        contracts.forEach((key, value) -> manager.removeContract(key));
         return 1;
     }
 
