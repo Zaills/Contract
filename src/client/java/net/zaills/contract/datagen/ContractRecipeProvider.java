@@ -31,6 +31,13 @@ public class ContractRecipeProvider extends FabricRecipeProvider {
                 )
                 .requires(Items.FEATHER).requires(Items.INK_SAC).unlockedBy(getHasName(Items.INK_SAC), has(Items.INK_SAC))
                 .save(output);
+
+                shapeless(
+                        RecipeCategory.MISC,
+                        ModItem.QUILL
+                )
+                .requires(ModItem.QUILL).requires(Items.INK_SAC).unlockedBy(getHasName(ModItem.QUILL), has(ModItem.QUILL))
+                .save(output);
             }
         };
     }
