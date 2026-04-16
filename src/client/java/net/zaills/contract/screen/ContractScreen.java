@@ -15,6 +15,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.Pose;
+import net.minecraft.world.entity.player.PlayerModelPart;
 import net.zaills.contract.component.Contract_Type;
 import net.zaills.contract.packet.ContractPayload;
 
@@ -158,7 +159,12 @@ public class ContractScreen extends Screen {
 
         if (player == null) return;
 
-        RemotePlayer fakePlayer = new RemotePlayer(Minecraft.getInstance().level, player.getGameProfile());
+        RemotePlayer fakePlayer = new RemotePlayer(Minecraft.getInstance().level, player.getGameProfile()) {
+            @Override
+            public boolean isModelPartShown(PlayerModelPart playerModelPart) {
+                return true;
+            }
+        };
 
         fakePlayer.setPose(Pose.STANDING);
         fakePlayer.setShiftKeyDown(false);
