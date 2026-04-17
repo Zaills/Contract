@@ -1,6 +1,7 @@
 package net.zaills.contract.screen;
 
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
@@ -159,30 +160,46 @@ public class ContractScreen extends Screen {
 
         if (player == null) return;
 
-        RemotePlayer fakePlayer = new RemotePlayer(Minecraft.getInstance().level, player.getGameProfile()) {
-            @Override
-            public boolean isModelPartShown(PlayerModelPart playerModelPart) {
-                return true;
-            }
-        };
 
-        fakePlayer.setPose(Pose.STANDING);
-        fakePlayer.setShiftKeyDown(false);
-        fakePlayer.setSprinting(false);
 
         int x1 = x - scale;
         int y1 = y - (int)(scale * 2.2);
         int x2 = x + scale;
         int y2 = y + (int)(scale * 0.5);
 
-        InventoryScreen.renderEntityInInventoryFollowsMouse(
-                guiGraphics,
-                x1, y1,
-                x2, y2,
-                scale, 0.0625F,
-                mouseX, mouseY,
-                fakePlayer
-        );
+        if (FabricLoader.getInstance().isModLoaded("figura")) {
+
+            InventoryScreen.renderEntityInInventoryFollowsMouse(
+                    guiGraphics,
+                    x1, y1,
+                    x2, y2,
+                    scale, 0.0625F,
+                    mouseX, mouseY,
+                    player
+            );
+
+        } else {
+
+            RemotePlayer fakePlayer = new RemotePlayer(Minecraft.getInstance().level, player.getGameProfile()) {
+                @Override
+                public boolean isModelPartShown(PlayerModelPart playerModelPart) {
+                    return true;
+                }
+            };
+
+            fakePlayer.setPose(Pose.STANDING);
+            fakePlayer.setShiftKeyDown(false);
+            fakePlayer.setSprinting(false);
+
+            InventoryScreen.renderEntityInInventoryFollowsMouse(
+                    guiGraphics,
+                    x1, y1,
+                    x2, y2,
+                    scale, 0.0625F,
+                    mouseX, mouseY,
+                    fakePlayer
+            );
+        }
     }
 
     private void renderBackground(GuiGraphics guiGraphics) {
