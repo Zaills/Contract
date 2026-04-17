@@ -53,12 +53,12 @@ public class ModPacket {
                             );
                         }
 
-                        if (runner.getInventory().getFreeSlot() != -1) {
-                            runner.getInventory().add(newContract);
+                        if (sender.getInventory().getFreeSlot() != -1) {
+                            sender.getInventory().add(newContract);
                         } else {
-                            Level level = runner.level();
+                            Level level = sender.level();
                             ItemEntity itemEntity = new ItemEntity(level,
-                                    runner.getX(), runner.getY() + 1, runner.getZ(), newContract
+                                    sender.getX(), sender.getY() + 1, sender.getZ(), newContract
                             );
                             level.addFreshEntity(itemEntity);
                         }
