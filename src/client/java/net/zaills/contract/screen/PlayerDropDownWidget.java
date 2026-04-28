@@ -18,6 +18,8 @@ public class PlayerDropDownWidget extends AbstractWidget {
     private final Consumer<UUID> onSelect;
     private int index = 0;
     private boolean expanded = false;
+    private int scrollOffset = 0;
+    private final int maxVisible = 5;
 
     public PlayerDropDownWidget(int x, int y, int width, int height,
                                 List<UUID> players, Function<UUID, String> nameResolver,
@@ -47,13 +49,16 @@ public class PlayerDropDownWidget extends AbstractWidget {
             int listY = getY() + getHeight();
 
             for (int i = 0; i < visible; i++) {
+                int playerIndex = scrollOffset + i;
+                if (playerIndex >= players.size()) break;
+
                 int itemY = listY + i * 16;
                 boolean hovered = x >= getX() && x <= getX() + getWidth()
                         && y >= itemY && y < itemY + 16;
 
                 guiGraphics.fill(getX(), itemY, getX() + getWidth(), itemY + 16,
                         hovered ? 0xFF666666 : 0xFF444444);
-                guiGraphics.drawString(minecraft.font, nameResolver.apply(players.get(i)),
+                guiGraphics.drawString(minecraft.font, nameResolver.apply(players.get(playerIndex)),
                         getX() + 4, itemY + (16 - 8) / 2,
                         i == index ? 0xFFFFD700 : 0xFFFFFFFF
                 );
@@ -69,19 +74,25 @@ public class PlayerDropDownWidget extends AbstractWidget {
         if (x >= getX() && x <= getX() + getWidth()
                 && y >= getY() && y <= getY() + getHeight()) {
             expanded = !expanded;
+            if (expanded) {
+                scrollOffset = 0;
+            }
             playDownSound(Minecraft.getInstance().getSoundManager());
             return true;
         }
 
         if (expanded) {
-            int visible = Math.min(players.size(), 5);
+            int visible = Math.min(players.size(), maxVisible);
             int listY = getY() + getHeight();
 
             for (int i = 0; i < visible; i++) {
+                int playerIndex = scrollOffset + i;
+                if (playerIndex >= players.size()) break;
+
                 int itemY = listY + i * 16;
                 if (x >= getX() && x <= getX() + getWidth()
                         && y >= itemY && y < itemY + 16) {
-                    index = i;
+                    index = playerIndex;
                     expanded = false;
                     setMessage(Component.literal(nameResolver.apply(players.get(index))));
                     onSelect.accept(players.get(index));
@@ -92,6 +103,23 @@ public class PlayerDropDownWidget extends AbstractWidget {
             }
         }
         return false;
+    }
+
+    @Override
+    public boolean mouseScrolled(double d, double e, double f, double g) {
+        if (expanded) {
+            int maxScroll = Math.max(0, players.size() - maxVisible);
+
+            if (maxScroll > 0) {
+                if (g > 0) {
+                    scrollOffset = Math.max(0, scrollOffset - 1);
+                } else if (g < 0) {
+                    scrollOffset = Math.min(maxScroll, scrollOffset + 1);
+                }
+                return true;
+            }
+        }
+        return super.mouseScrolled(d, e, f, g);
     }
 
     @Override
